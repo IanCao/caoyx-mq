@@ -4,14 +4,13 @@ import com.caoyx.mq.client.ICaoyxMqClient;
 import com.caoyx.mq.config.CaoyxMqProducerConfig;
 import com.caoyx.mq.data.CaoyxMqMessage;
 import com.caoyx.mq.exception.CaoyxMqException;
+import com.caoyx.rpc.core.exception.CaoyxRpcException;
 import com.caoyx.rpc.core.invoker.reference.CaoyxRpcReferenceBean;
-import com.caoyx.rpc.core.loadbalance.impl.RandomLoadBalance;
+import com.caoyx.rpc.core.loadbalance.LoadBalanceType;
 import com.caoyx.rpc.core.net.netty.client.NettyClient;
 import com.caoyx.rpc.core.register.RegisterConfig;
 import com.caoyx.rpc.core.register.RegisterType;
 import com.caoyx.rpc.core.serialization.api.SerializerAlgorithm;
-
-import java.util.UUID;
 
 /**
  * @Author: caoyixiong
@@ -22,20 +21,20 @@ public class CaoyxMqProduer implements MqProducer {
     private ICaoyxMqClient caoyxMqClient;
 
     public void start(CaoyxMqProducerConfig config) throws CaoyxMqException {
-        CaoyxRpcReferenceBean referenceBean = new CaoyxRpcReferenceBean(ICaoyxMqClient.class,
-                "0",
-                "caoyxMq-broker",
-                new RegisterConfig(RegisterType.NO_REGISTER.getValue(), null, config.getBrokerAddresses()),
-                NettyClient.class,
-                SerializerAlgorithm.HESSIAN2,
-                null);
+
         try {
-            referenceBean.setLoadBalance(new RandomLoadBalance());
-            referenceBean.init();
-        } catch (Exception e) {
+            CaoyxRpcReferenceBean referenceBean = new CaoyxRpcReferenceBean(ICaoyxMqClient.class,
+                    "0",
+                    "caoyxMq-broker",
+                    new RegisterConfig(RegisterType.NO_REGISTER.getValue(), null, config.getBrokerAddresses()),
+                    NettyClient.class,
+                    SerializerAlgorithm.HESSIAN2,
+                    LoadBalanceType.RANDOM,
+                    null);
+            caoyxMqClient = (ICaoyxMqClient) referenceBean.getObject();
+        } catch (CaoyxRpcException e) {
             throw new CaoyxMqException(e);
         }
-        caoyxMqClient = (ICaoyxMqClient) referenceBean.getObject();
     }
 
     public boolean send(String topic, CaoyxMqMessage message) throws CaoyxMqException {

@@ -6,6 +6,7 @@ import com.caoyx.mq.data.CaoyxMqMessage;
 import com.caoyx.mq.exception.CaoyxMqException;
 import com.caoyx.mq.serialization.JDKSerialization;
 import com.caoyx.rpc.core.invoker.reference.CaoyxRpcReferenceBean;
+import com.caoyx.rpc.core.loadbalance.LoadBalanceType;
 import com.caoyx.rpc.core.loadbalance.impl.RandomLoadBalance;
 import com.caoyx.rpc.core.net.netty.client.NettyClient;
 import com.caoyx.rpc.core.register.RegisterConfig;
@@ -23,20 +24,20 @@ public class CaoyxMqConsumer implements MqConsmuer {
     private ICaoyxMqClient caoyxMqClient;
 
     public void start(CaoyxMqConsumerConfig config) throws CaoyxMqException {
-        CaoyxRpcReferenceBean referenceBean = new CaoyxRpcReferenceBean(ICaoyxMqClient.class,
-                "0",
-                "caoyxMq-broker",
-                new RegisterConfig(RegisterType.NO_REGISTER.getValue(), null, config.getBrokerAddresses()),
-                NettyClient.class,
-                SerializerAlgorithm.HESSIAN2,
-                null);
         try {
-            referenceBean.setLoadBalance(new RandomLoadBalance());
-            referenceBean.init();
+            CaoyxRpcReferenceBean referenceBean = new CaoyxRpcReferenceBean(ICaoyxMqClient.class,
+                    "0",
+                    "caoyxMq-broker",
+                    new RegisterConfig(RegisterType.NO_REGISTER.getValue(), null, config.getBrokerAddresses()),
+                    NettyClient.class,
+                    SerializerAlgorithm.HESSIAN2,
+                    LoadBalanceType.RANDOM,
+                    null);
+            caoyxMqClient = (ICaoyxMqClient) referenceBean.getObject();
         } catch (Exception e) {
             throw new CaoyxMqException(e);
         }
-        caoyxMqClient = (ICaoyxMqClient) referenceBean.getObject();
+
     }
 
     public List<CaoyxMqMessage> pullMessage(String topic) throws CaoyxMqException {
