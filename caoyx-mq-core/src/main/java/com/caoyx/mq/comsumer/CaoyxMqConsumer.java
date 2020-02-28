@@ -2,16 +2,13 @@ package com.caoyx.mq.comsumer;
 
 import com.caoyx.mq.client.ICaoyxMqClient;
 import com.caoyx.mq.config.CaoyxMqConsumerConfig;
+import com.caoyx.mq.constant.CaoyxMqConstant;
 import com.caoyx.mq.data.CaoyxMqMessage;
 import com.caoyx.mq.exception.CaoyxMqException;
-import com.caoyx.mq.serialization.JDKSerialization;
+import com.caoyx.rpc.core.config.CaoyxRpcInvokerConfig;
 import com.caoyx.rpc.core.invoker.reference.CaoyxRpcReferenceBean;
-import com.caoyx.rpc.core.loadbalance.LoadBalanceType;
-import com.caoyx.rpc.core.loadbalance.impl.RandomLoadBalance;
-import com.caoyx.rpc.core.net.netty.client.NettyClient;
 import com.caoyx.rpc.core.register.RegisterConfig;
 import com.caoyx.rpc.core.register.RegisterType;
-import com.caoyx.rpc.core.serialization.api.SerializerAlgorithm;
 
 import java.util.List;
 
@@ -24,15 +21,13 @@ public class CaoyxMqConsumer implements MqConsmuer {
     private ICaoyxMqClient caoyxMqClient;
 
     public void start(CaoyxMqConsumerConfig config) throws CaoyxMqException {
+        CaoyxRpcInvokerConfig invokerConfig = new CaoyxRpcInvokerConfig();
+        invokerConfig.setApplicationName(CaoyxMqConstant.CAOYX_MQ_CONSUMER_APPLICATION_NAME);
+        invokerConfig.setProviderApplicationName(CaoyxMqConstant.CAOYX_MQ_BROKER_APPLICATION_NAME);
+        invokerConfig.setIFace(ICaoyxMqClient.class);
+        invokerConfig.setRegisterConfig(new RegisterConfig(config.getBrokerAddresses(), RegisterType.DIRECT));
         try {
-            CaoyxRpcReferenceBean referenceBean = new CaoyxRpcReferenceBean(ICaoyxMqClient.class,
-                    "0",
-                    "caoyxMq-broker",
-                    new RegisterConfig(RegisterType.NO_REGISTER.getValue(), null, config.getBrokerAddresses()),
-                    NettyClient.class,
-                    SerializerAlgorithm.HESSIAN2,
-                    LoadBalanceType.RANDOM,
-                    null);
+            CaoyxRpcReferenceBean referenceBean = new CaoyxRpcReferenceBean(invokerConfig);
             caoyxMqClient = (ICaoyxMqClient) referenceBean.getObject();
         } catch (Exception e) {
             throw new CaoyxMqException(e);

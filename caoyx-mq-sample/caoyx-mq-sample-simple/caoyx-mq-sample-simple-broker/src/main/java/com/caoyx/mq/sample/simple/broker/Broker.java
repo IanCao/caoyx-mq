@@ -12,6 +12,7 @@ public class Broker {
     public static void main(String[] args) throws CaoyxMqException {
         CaoyxMqBroker broker = new CaoyxMqBroker();
         CaoyxMqBrokerConfig config = new CaoyxMqBrokerConfig();
+        config.setPort(1118);
         broker.start(config);
     }
 }

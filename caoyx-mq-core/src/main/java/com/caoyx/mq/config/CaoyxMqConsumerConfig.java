@@ -10,5 +10,5 @@ import java.util.List;
  */
 @Data
 public class CaoyxMqConsumerConfig {
-    private List<String> brokerAddresses;
+    private String brokerAddresses;
 }

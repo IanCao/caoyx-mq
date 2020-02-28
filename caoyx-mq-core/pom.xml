@@ -25,7 +25,7 @@
 
     <properties>
         <lombok.version>1.16.22</lombok.version>
-        <caoyx-rpc.version>1.0.0-SNAPSHOT</caoyx-rpc.version>
+        <caoyx-rpc.version>1.0.0</caoyx-rpc.version>
     </properties>
     <dependencies>
         <dependency>
@@ -39,12 +39,6 @@
             <artifactId>lombok</artifactId>
             <version>${lombok.version}</version>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>log4j-over-slf4j</artifactId>
-            <version>1.8.0-beta4</version>
-            <scope>compile</scope>
         </dependency>
     </dependencies>
 </project>

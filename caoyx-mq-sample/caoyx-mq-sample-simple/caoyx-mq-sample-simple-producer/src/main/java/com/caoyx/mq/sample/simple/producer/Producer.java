@@ -15,9 +15,7 @@ public class Producer {
     public static void main(String[] args) throws CaoyxMqException, InterruptedException {
         CaoyxMqProduer produer = new CaoyxMqProduer();
         CaoyxMqProducerConfig config = new CaoyxMqProducerConfig();
-        config.setBrokerAddresses(new ArrayList<String>() {{
-            add("127.0.0.1:1118");
-        }});
+        config.setBrokerAddresses("127.0.0.1:1118");
         produer.start(config);
 
         int i = 0;

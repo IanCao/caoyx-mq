@@ -1,5 +1,7 @@
 package com.caoyx.mq.data;
 
+import lombok.Data;
+
 import java.io.Serializable;
 import java.util.Map;
 
@@ -7,6 +9,7 @@ import java.util.Map;
  * @Author: caoyixiong
  * @Date: 2020-01-13 10:08
  */
+@Data
 public class CaoyxMqMessage implements Serializable {
 
     private String messageId;
@@ -14,6 +17,8 @@ public class CaoyxMqMessage implements Serializable {
     private String body;
 
     private Map<String, Object> metaData;
+
+    private boolean success;
 
     public String getMessageId() {
         return messageId;
@@ -41,10 +46,13 @@ public class CaoyxMqMessage implements Serializable {
 
     @Override
     public String toString() {
+
         return "CaoyxMqMessage{" +
                 "messageId='" + messageId + '\'' +
                 ", body='" + body + '\'' +
                 ", metaData=" + metaData +
                 '}';
     }
+
+
 }

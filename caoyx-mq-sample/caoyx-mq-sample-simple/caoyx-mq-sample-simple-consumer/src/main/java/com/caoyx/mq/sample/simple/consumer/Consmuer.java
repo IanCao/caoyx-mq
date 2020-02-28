@@ -17,9 +17,7 @@ public class Consmuer {
         CaoyxMqConsumer consumer = new CaoyxMqConsumer();
 
         CaoyxMqConsumerConfig consumerConfig = new CaoyxMqConsumerConfig();
-        consumerConfig.setBrokerAddresses(new ArrayList<String>() {{
-            add("127.0.0.1:1118");
-        }});
+        consumerConfig.setBrokerAddresses("127.0.0.1:1118");
         consumer.start(consumerConfig);
 
         while (true) {
